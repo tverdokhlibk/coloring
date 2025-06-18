@@ -1,0 +1,74 @@
+baseURL: 'https://your-coloring-site.com'
+languageCode: 'uk-ua'
+title: 'Розмальовки для дітей'
+theme: 'coloring-theme'
+
+# Параметри сайту
+params:
+  description: 'Найбільша колекція розмальовок для дітей - понад 1000 унікальних малюнків у різних категоріях'
+  keywords: 'розмальовки, дитячі розмальовки, малювання, творчість'
+  author: 'Розмальовки для дітей'
+  
+  # SEO налаштування
+  images: ['/images/og-image.jpg']
+  
+  # Пагінація
+  paginate: 24
+  
+  # Соціальні мережі
+  social:
+    facebook: 'https://facebook.com/your-page'
+    instagram: 'https://instagram.com/your-page'
+    youtube: 'https://youtube.com/your-channel'
+
+# Меню
+menu:
+  main:
+    - name: 'Головна'
+      url: '/'
+      weight: 1
+    - name: 'Всі розмальовки'
+      url: '/coloring-pages/'
+      weight: 2
+    - name: 'Категорії'
+      url: '/categories/'
+      weight: 3
+    - name: 'Популярні'
+      url: '/popular/'
+      weight: 4
+    - name: 'Нові'
+      url: '/recent/'
+      weight: 5
+
+# Таксономії
+taxonomies:
+  category: 'categories'
+  tag: 'tags'
+  age: 'ages'
+  difficulty: 'difficulty'
+
+# Налаштування зображень
+imaging:
+  resampleFilter: 'lanczos'
+  quality: 85
+  formats: ['webp', 'jpg']
+  
+# Налаштування розмітки
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    style: 'github'
+    lineNos: false
+
+# Параметри для пошуку
+outputs:
+  home: ['HTML', 'RSS', 'JSON']
+  page: ['HTML']
+  section: ['HTML', 'RSS']
+
+# Налаштування безпеки
+security:
+  exec:
+    allow: ['^dart-sass-embedded$', '^go$', '^npx$', '^postcss$']
