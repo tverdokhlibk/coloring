@@ -1,0 +1,240 @@
+{{ define "main" }}
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Найкраща колекція розмальовок для дітей
+            </h1>
+            <p class="hero-description">
+                Понад 1000 унікальних розмальовок у різних категоріях. Безкоштовно завантажуйте та друкуйте!
+            </p>
+            
+            <!-- Featured Search -->
+            <div class="hero-search">
+                <form class="hero-search-form" action="/search/" method="get">
+                    <input type="search" name="q" placeholder="Що хочете розмалювати сьогодні?" class="hero-search-input" autocomplete="off">
+                    <button type="submit" class="hero-search-btn">Знайти</button>
+                </form>
+            </div>
+            
+            <!-- Quick Categories -->
+            <div class="quick-categories">
+                <span class="quick-label">Популярні:</span>
+                {{ range first 8 .Site.Taxonomies.categories.ByCount }}
+                <a href="{{ .Page.Permalink }}" class="quick-category">{{ .Page.Title }}</a>
+                {{ end }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Section -->
+<div class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">{{ len (where .Site.RegularPages "Type" "coloring-page") }}</div>
+                <div class="stat-label">Розмальовок</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ len .Site.Taxonomies.categories }}</div>
+                <div class="stat-label">Категорій</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Безкоштовно</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">HD</div>
+                <div class="stat-label">Якість</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Categories -->
+<section class="featured-categories">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Популярні категорії</h2>
+            <p class="section-description">Оберіть категорію, яка вам подобається</p>
+        </div>
+        
+        <div class="categories-grid">
+            {{ range first 12 .Site.Taxonomies.categories.ByCount }}
+            {{ $category := .Page }}
+            {{ $firstPage := index (where $.Site.RegularPages ".Params.categories" "intersect" (slice $category.Title)) 0 }}
+            <div class="category-card">
+                <a href="{{ $category.Permalink }}" class="category-link">
+                    <div class="category-image">
+                        {{ if $firstPage.Params.thumbnail }}
+                        <img src="{{ $firstPage.Params.thumbnail }}" alt="{{ $category.Title }}" loading="lazy">
+                        {{ else }}
+                        <div class="category-placeholder">
+                            <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                <circle cx="9" cy="9" r="2"/>
+                                <path d="21 15l-3.086-3.086a2 2 0 00-2.828 0L6 21"/>
+                            </svg>
+                        </div>
+                        {{ end }}
+                        <div class="category-count">{{ .Count }} розмальовок</div>
+                    </div>
+                    <div class="category-info">
+                        <h3 class="category-name">{{ $category.Title }}</h3>
+                    </div>
+                </a>
+            </div>
+            {{ end }}
+        </div>
+        
+        <div class="section-footer">
+            <a href="/categories/" class="btn btn-outline">Всі категорії</a>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Coloring Pages -->
+<section class="latest-coloring-pages">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Нові розмальовки</h2>
+            <p class="section-description">Найсвіжіші додавання до нашої колекції</p>
+        </div>
+        
+        <div class="coloring-grid">
+            {{ range first 16 (where .Site.RegularPages "Type" "coloring-page") }}
+            <div class="coloring-card">
+                <a href="{{ .Permalink }}" class="coloring-link">
+                    <div class="coloring-image">
+                        {{ if .Params.thumbnail }}
+                        <img src="{{ .Params.thumbnail }}" alt="{{ .Title }}" loading="lazy">
+                        {{ else }}
+                        <div class="coloring-placeholder">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                        </div>
+                        {{ end }}
+                        <div class="coloring-overlay">
+                            <span class="coloring-action">Переглянути</span>
+                        </div>
+                    </div>
+                    <div class="coloring-info">
+                        <h3 class="coloring-title">{{ .Title }}</h3>
+                        <div class="coloring-meta">
+                            {{ if .Params.categories }}
+                            <span class="coloring-category">{{ index .Params.categories 0 }}</span>
+                            {{ end }}
+                            {{ if .Params.difficulty }}
+                            <span class="coloring-difficulty">{{ .Params.difficulty }}</span>
+                            {{ end }}
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {{ end }}
+        </div>
+        
+        <div class="section-footer">
+            <a href="/coloring-pages/" class="btn btn-primary">Всі розмальовки</a>
+        </div>
+    </div>
+</section>
+
+<!-- Age Groups -->
+<section class="age-groups">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">За віком</h2>
+            <p class="section-description">Розмальовки для різних вікових груп</p>
+        </div>
+        
+        <div class="age-grid">
+            {{ range .Site.Taxonomies.ages }}
+            <div class="age-card">
+                <a href="{{ .Page.Permalink }}" class="age-link">
+                    <div class="age-icon">
+                        {{ if eq .Page.Title "2-4 роки" }}
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="5"/>
+                            <path d="20 21a8 8 0 1 0-16 0"/>
+                        </svg>
+                        {{ else if eq .Page.Title "5-7 років" }}
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                        {{ else }}
+                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="22 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        {{ end }}
+                    </div>
+                    <h3 class="age-title">{{ .Page.Title }}</h3>
+                    <p class="age-count">{{ .Count }} розмальовок</p>
+                </a>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="benefits-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Чому розмальовки корисні?</h2>
+        </div>
+        
+        <div class="benefits-grid">
+            <div class="benefit-item">
+                <div class="benefit-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="9 12l2 2 4-4"/>
+                        <path d="21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                        <path d="3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                        <path d="3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                    </svg>
+                </div>
+                <h3 class="benefit-title">Розвиває моторику</h3>
+                <p class="benefit-description">Покращує координацію рук і підготовку до письма</p>
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="12 1v6m0 6v6m11-7h-6m-6 0H1"/>
+                    </svg>
+                </div>
+                <h3 class="benefit-title">Концентрація уваги</h3>
+                <p class="benefit-description">Допомагає дітям зосереджуватися та бути терплячими</p>
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                </div>
+                <h3 class="benefit-title">Творчість</h3>
+                <p class="benefit-description">Стимулює уяву та художнє мислення</p>
+            </div>
+            
+            <div class="benefit-item">
+                <div class="benefit-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                </div>
+                <h3 class="benefit-title">Зняття стресу</h3>
+                <p class="benefit-description">Заспокоює та допомагає розслабитися</p>
+            </div>
+        </div>
+    </div>
+</section>
+{{ end }}

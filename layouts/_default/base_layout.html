@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}</title>
+    <meta name="description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+    <meta name="keywords" content="{{ if .Params.keywords }}{{ delimit .Params.keywords ", " }}{{ else }}{{ .Site.Params.keywords }}{{ end }}">
+    <meta name="author" content="{{ .Site.Params.author }}">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} | {{ .Site.Title }}{{ end }}">
+    <meta property="og:description" content="{{ if .Description }}{{ .Description }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+    <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+    <meta property="og:url" content="{{ .Permalink }}">
+    {{ if .Params.image }}
+    <meta property="og:image" content="{{ .Params.image | absURL }}">
+    {{ else }}
+    <meta property="og:image" content="{{ .Site.Params.images | first | absURL }}">
+    {{ end }}
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ .Permalink }}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+    
+    <!-- JSON-LD Structured Data -->
+    {{ if .IsHome }}
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "{{ .Site.Title }}",
+        "url": "{{ .Site.BaseURL }}",
+        "description": "{{ .Site.Params.description }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ .Site.BaseURL }}/search/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+    {{ end }}
+</head>
+<body class="{{ .Type }}{{ if .IsHome }} home{{ end }}">
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/" class="logo-link">
+                        <img src="/images/logo.svg" alt="{{ .Site.Title }}" class="logo-img">
+                        <span class="logo-text">{{ .Site.Title }}</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation -->
+                <nav class="main-nav">
+                    <ul class="nav-list">
+                        {{ range .Site.Menus.main }}
+                        <li class="nav-item">
+                            <a href="{{ .URL }}" class="nav-link{{ if $.IsMenuCurrent "main" . }} active{{ end }}">
+                                {{ .Name }}
+                            </a>
+                        </li>
+                        {{ end }}
+                    </ul>
+                </nav>
+                
+                <!-- Search -->
+                <div class="search-container">
+                    <form class="search-form" action="/search/" method="get">
+                        <input type="search" name="q" placeholder="Знайти розмальовку..." class="search-input" autocomplete="off">
+                        <button type="submit" class="search-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="21 21l-4.35-4.35"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" aria-label="Відкрити меню">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {{ block "main" . }}{{ end }}
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">{{ .Site.Title }}</h3>
+                    <p class="footer-description">{{ .Site.Params.description }}</p>
+                    <div class="social-links">
+                        {{ range $key, $value := .Site.Params.social }}
+                        <a href="{{ $value }}" class="social-link" aria-label="{{ $key }}" target="_blank" rel="noopener">
+                            {{ if eq $key "facebook" }}
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            {{ else if eq $key "instagram" }}
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                            {{ else if eq $key "youtube" }}
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                            </svg>
+                            {{ end }}
+                        </a>
+                        {{ end }}
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Популярні категорії</h4>
+                    <ul class="footer-links">
+                        {{ range first 6 .Site.Taxonomies.categories.ByCount }}
+                        <li><a href="{{ .Page.Permalink }}" class="footer-link">{{ .Page.Title }}</a></li>
+                        {{ end }}
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-subtitle">Корисне</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about/" class="footer-link">Про нас</a></li>
+                        <li><a href="/contact/" class="footer-link">Контакти</a></li>
+                        <li><a href="/privacy/" class="footer-link">Конфіденційність</a></li>
+                        <li><a href="/sitemap.xml" class="footer-link">Карта сайту</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p class="copyright">&copy; {{ now.Year }} {{ .Site.Title }}. Всі права захищені.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="/js/main.js"></script>
+    
+    <!-- Search functionality -->
+    <script>
+        // Search functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchForm = document.querySelector('.search-form');
+            const searchInput = document.querySelector('.search-input');
+            
+            // Load search index
+            let searchIndex = [];
+            fetch('/index.json')
+                .then(response => response.json())
+                .then(data => {
+                    searchIndex = data;
+                });
+                
+            // Search functionality
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const query = searchInput.value.toLowerCase().trim();
+                if (query) {
+                    window.location.href = `/search/?q=${encodeURIComponent(query)}`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

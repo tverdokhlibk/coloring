@@ -1,0 +1,60 @@
+{
+  "name": "kids-coloring-website",
+  "version": "1.0.0",
+  "description": "Hugo сайт з колекцією розмальовок для дітей різного віку",
+  "main": "index.js",
+  "scripts": {
+    "dev": "hugo server -D --bind 0.0.0.0",
+    "build": "hugo --minify",
+    "build:preview": "hugo --minify --buildDrafts --buildFuture",
+    "start": "npm run dev",
+    "generate": "node scripts/generate-content.js",
+    "generate:content": "node scripts/generate-content.js",
+    "clean": "rm -rf public/ resources/",
+    "test": "hugo --minify --environment staging",
+    "serve": "hugo server",
+    "deploy": "npm run build && echo 'Ready for deployment'",
+    "optimize": "npm run optimize:images",
+    "optimize:images": "node scripts/optimize-images.js",
+    "setup": "mkdir -p static/images/coloring/{full,thumbnails,original} content/coloring-page layouts/{_default,coloring-page,categories} scripts .github/workflows"
+  },
+  "keywords": [
+    "hugo",
+    "static-site",
+    "coloring-pages",
+    "kids",
+    "ukraine",
+    "розмальовки",
+    "діти",
+    "творчість"
+  ],
+  "author": "Kids Coloring Website",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/kids-coloring-website.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/kids-coloring-website/issues"
+  },
+  "homepage": "https://your-username.github.io/kids-coloring-website",
+  "devDependencies": {
+    "sharp": "^0.32.6"
+  },
+  "optionalDependencies": {
+    "@types/node": "^20.10.5"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "hugo": {
+    "version": "0.121.0",
+    "extended": true
+  }
+}

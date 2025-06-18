@@ -1,0 +1,84 @@
+# GitHub Actions workflow для автоматичного деплою Hugo сайту на GitHub Pages
+name: Deploy Hugo site to Pages
+
+on:
+  # Запускається при push до гілки main
+  push:
+    branches: ["main"]
+  
+  # Дозволяє ручний запуск з вкладки Actions
+  workflow_dispatch:
+
+# Налаштування дозволів для GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Дозволити лише один одночасний деплой
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+# Задачі по умовчанню використовують bash shell
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Задача білду
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.121.0
+    steps:
+      - name: Встановлення Hugo CLI
+        run: |
+          wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+          && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+          
+      - name: Встановлення Dart Sass
+        run: sudo snap install dart-sass
+        
+      - name: Checkout репозиторію
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          
+      - name: Налаштування Pages
+        id: pages
+        uses: actions/configure-pages@v4
+        
+      - name: Встановлення Node.js залежностей
+        run: |
+          if [ -f package.json ]; then
+            npm ci
+          fi
+          
+      - name: Білд з Hugo
+        env:
+          # Для максимальної продуктивності
+          HUGO_ENVIRONMENT: production
+          HUGO_ENV: production
+        run: |
+          hugo \
+            --gc \
+            --minify \
+            --baseURL "${{ steps.pages.outputs.base_url }}/"
+            
+      - name: Завантаження артефакту
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: ./public
+
+  # Задача деплою
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Деплой на GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v3
